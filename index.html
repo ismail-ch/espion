@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <input type="text" id="label">
+  <button onclick="send()">send</button>
+  <hr>
+  <label for="" id="lbl"></label>
+  <hr>
+  <input type="text" id="search">
+  <button id="btn-search">search</button>
+  <textarea id="era" rows="8" cols="80"></textarea>
+  <script src="/socket.io/socket.io.js"></script>
+  <script >
+
+  const socket = io();
+  const msg = document.getElementById('message')
+  socket.on('connect', ()=>{
+    console.log("connected")
+    console.log(socket.id)
+  });
+
+  socket.on('serverevents', (data)=>{
+    var datas = [];
+    console.log("recieved", data)
+    lbl.innerHTML = data.name +' has enter the Room';
+    lbl.value  * '';
+    label.value = "";
+    datas.push(data)
+    document.getElementById('btn-search').addEventListener('click', e=>{
+      const srx = document.getElementById('search')
+      for (var i = 0; i < datas.length; i++) {
+      if(datas[i].name == srx.value){
+        console.log("hey "+srx.value)
+        console.log(datas[i].id)
+        socket.broadcast.to(datas[i].id).emit('message', 'yo')
+      }
+  }
+    })
+  });
+
+  function send(){
+    const name= document.getElementById("label").value
+    socket.emit("clientevent", {
+      name: name,
+      id: socket.id
+    });
+  }
+
+
+
+
+  </script>
+</body>
+</html>
